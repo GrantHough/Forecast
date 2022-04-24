@@ -24,7 +24,8 @@ client = Client(tk.accountSid, tk.authToken)
 start = '2015-01-01'
 end = '2022-04-23'
 
-st.title('Stock Trend Prediction')
+st.title('Forecast')
+st.subheader('Using AI to predict the stock market')
 st.text('Created by Grant Hough')
 
 stocks = ("VTI", "AAPL", "GOOG", "FB", "AMD", "ADBE", "TSLA", "INTC", "NFLX", "GOOGL", "MSFT", "PCG", "PSTG", "SOFI", "TWLO", "TWTR")
@@ -114,6 +115,7 @@ ax.yaxis.label.set_color('white')
 ax.tick_params(axis='y', colors='white')
 st.pyplot(forecastFig)
 
+st.caption('The black dots indicate real closing prices, and the blue line indicates the prediction of the model. The area without black dots is the prediction of closing prices that the model created.')
 
 st.subheader('Text the Creator Feedback')
 
