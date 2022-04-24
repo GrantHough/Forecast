@@ -36,42 +36,40 @@ st.write(df.head(10000))
 
 model = keras.models.load_model('model.h5')
 
-training_set = df.iloc[:1000, 1:2].values
-test_set = df.iloc[1000:, 1:2].values
+trainingSet = df.iloc[:1000, 1:2].values
+testSet = df.iloc[1000:, 1:2].values
 
 sc = MinMaxScaler(feature_range = (0, 1))
-training_set_scaled = sc.fit_transform(training_set)
+trainingSet_scaled = sc.fit_transform(trainingSet)
 
-dataset_train = df.iloc[:1000, 1:2]
-dataset_test = df.iloc[1000:, 1:2]
-dataset_total = pd.concat((dataset_train, dataset_test), axis = 0)
-inputs = dataset_total[len(dataset_total) - len(dataset_test) - 60:].values
+datasetTrain = df.iloc[:1000, 1:2]
+datasetTest = df.iloc[1000:, 1:2]
+datasetTotal = pd.concat((datasetTrain, datasetTest), axis = 0)
+inputs = datasetTotal[len(datasetTotal) - len(datasetTest) - 60:].values
 inputs = inputs.reshape(-1,1)
 inputs = sc.transform(inputs)
-X_test = []
+XTest = []
 for i in range(60, 900):
-    X_test.append(inputs[i-60:i, 0])
-X_test = np.array(X_test)
-X_test = np.reshape(X_test, (X_test.shape[0], X_test.shape[1], 1))
+    XTest.append(inputs[i-60:i, 0])
+XTest = np.array(XTest)
+XTest = np.reshape(XTest, (XTest.shape[0], XTest.shape[1], 1))
 
-predicted_stock_price = model.predict(X_test)
-predicted_stock_price = sc.inverse_transform(predicted_stock_price)
+predictedStockPrice = model.predict(XTest)
+predictedStockPrice = sc.inverse_transform(predictedStockPrice)
 
 st.subheader('Predicted Prices vs. Actual Prices')
 fig = plt.figure(figsize = (12, 6))
-plt.plot(df.loc[1000:, 'Date'],dataset_test.values, color = 'cyan', label = 'Actual Stock Price')
-plt.plot(df.loc[1000:, 'Date'],predicted_stock_price, color = 'blue', label = 'Predicted Stock Price')
+plt.plot(df.loc[1000:, 'Date'],datasetTest.values, color = 'cyan', label = 'Actual Stock Price')
+plt.plot(df.loc[1000:, 'Date'],predictedStockPrice, color = 'blue', label = 'Predicted Stock Price')
 plt.legend()
 plt.xlabel('Time')
 plt.ylabel('Stock Price ($)')
 plt.xticks(np.arange(0, 1000, 100))
 st.pyplot(fig)
 
-
-
 startDate = "2015-01-01"
 todayDate = date.today().strftime("%Y-%m-%d")
-years = st.slider("Years of Prediction", 1, 5)
+years = st.slider("Number of Future Years to Forcast", 1, 5)
 period = years * 365
 
 @st.cache
@@ -82,11 +80,11 @@ def loadData(ticker):
 
 data = loadData(symbolInput)
 
-df_train = data[['Date', 'Close']]
-df_train = df_train.rename(columns = {"Date": "ds", "Close": "y"})
+DFTrain = data[['Date', 'Close']]
+DFTrain = DFTrain.rename(columns = {"Date": "ds", "Close": "y"})
 
 model2 = Prophet()
-model2.fit(df_train)
+model2.fit(DFTrain)
 future = model2.make_future_dataframe(periods = period)
 forecast = model2.predict(future)
 
