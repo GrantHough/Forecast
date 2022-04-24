@@ -1,3 +1,4 @@
+from email.mime import image
 from tkinter import TRUE
 import matplotlib.pyplot as plt
 import pandas as pd
@@ -14,6 +15,11 @@ from datetime import date
 import plotly.offline as py
 import plotly.graph_objs as go
 import ipywidgets
+import os
+from twilio.rest import Client
+import twiliokeys as tk
+
+client = Client(tk.accountSid, tk.authToken)
 
 start = '2015-01-01'
 end = '2022-04-23'
@@ -59,12 +65,19 @@ predictedStockPrice = sc.inverse_transform(predictedStockPrice)
 
 st.subheader('Predicted Prices vs. Actual Prices')
 fig = plt.figure(figsize = (12, 6))
-plt.plot(df.loc[1000:, 'Date'],datasetTest.values, color = 'cyan', label = 'Actual Stock Price')
-plt.plot(df.loc[1000:, 'Date'],predictedStockPrice, color = 'blue', label = 'Predicted Stock Price')
+plt.plot(df.loc[1000:, 'Date'],datasetTest.values, color = (0.05, 0.32, 0.73), label = 'Actual Stock Price')
+plt.plot(df.loc[1000:, 'Date'],predictedStockPrice, color = (0.2, 0.5, 0.6), label = 'Predicted Stock Price')
 plt.legend()
 plt.xlabel('Time')
 plt.ylabel('Stock Price ($)')
 plt.xticks(np.arange(0, 1000, 100))
+ax = plt.gca()
+ax.set_facecolor((0.08, 0.08, 0.1))
+fig.patch.set_facecolor((0.13, 0.18, 0.25))
+ax.xaxis.label.set_color('white')
+ax.tick_params(axis='x', colors='white')
+ax.yaxis.label.set_color('white')
+ax.tick_params(axis='y', colors='white')
 st.pyplot(fig)
 
 startDate = "2015-01-01"
@@ -93,5 +106,26 @@ forecastFig = model2.plot(forecast)
 ax = forecastFig.gca() 
 ax.set_xlabel("Time", size=10)
 ax.set_ylabel("Stock Price ($)", size=10)
+ax.set_facecolor((0.08, 0.08, 0.1))
+forecastFig.patch.set_facecolor((0.13, 0.18, 0.25))
+ax.xaxis.label.set_color('white')
+ax.tick_params(axis='x', colors='white')
+ax.yaxis.label.set_color('white')
+ax.tick_params(axis='y', colors='white')
 st.pyplot(forecastFig)
 
+
+st.subheader('Text the Creator Feedback')
+
+textInput = ''
+textMessage = st.text_input("Enter a message", textInput)
+
+def sendMessage():
+    if (len(textMessage) > 0):
+        message = client.messages.create (
+            body = textMessage,
+            from_ = tk.twilioNumber,
+            to = tk.targetNumber
+        )
+  
+st.button("Send Message", on_click = sendMessage)
