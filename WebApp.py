@@ -27,7 +27,7 @@ end = '2022-04-23'
 st.title('Stock Trend Prediction')
 st.text('Created by Grant Hough')
 
-stocks = ("VTI", "AAPL", "GOOG", "FB", "AMD", "ADBE", "TSLA", "INTC")
+stocks = ("VTI", "AAPL", "GOOG", "FB", "AMD", "ADBE", "TSLA", "INTC", "NFLX", "GOOGL", "MSFT", "PCG", "PSTG", "SOFI", "TWLO", "TWTR")
 symbolInput = st.selectbox("Select a stock to analyze", stocks)
 df = pd.read_csv(symbolInput + ".csv")
 
