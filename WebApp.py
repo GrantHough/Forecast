@@ -115,7 +115,7 @@ ax.yaxis.label.set_color('white')
 ax.tick_params(axis='y', colors='white')
 st.pyplot(forecastFig)
 
-st.caption('The black dots indicate real closing prices, and the blue line indicates the prediction of the model. The area without black dots is the prediction of closing prices that the model created.')
+st.caption('The black dots indicate real closing prices, and the blue line indicates the prediction of the model. The area without black dots is the prediction of future closing prices that the model created.')
 
 st.subheader('Text the Creator Feedback')
 
